@@ -35,7 +35,6 @@ def load_lottie_from_url(url: str):
         r.raise_for_status()
         return r.json()
     except requests.exceptions.RequestException as e:
-        # st.error(f"Failed to load Lottie from URL: {url}")
         return None
 
 def set_background_and_styles():
@@ -49,7 +48,7 @@ def set_background_and_styles():
         background-attachment: fixed;
     }}
 
-    /* Animated particle background (NEW) */
+    /* Animated particle background */
     @keyframes move-particles {{
         0% {{ transform: translateY(0); }}
         100% {{ transform: translateY(-100vh); }}
@@ -60,14 +59,14 @@ def set_background_and_styles():
         top: 0;
         left: 0;
         width: 100%;
-        height: 200vh; /* Double height to loop seamlessly */
+        height: 200vh;
         background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
         background-size: 30px 30px;
         animation: move-particles 50s linear infinite;
         z-index: -1;
     }}
 
-    /* Custom radio buttons from original script */
+    /* Custom radio buttons */
     div.st-emotion-cache-1t2qdok {{ justify-content: center; gap: 1rem; }}
     div.st-emotion-cache-k7vsyb {{
         border: 1px solid #64FFDA; background-color: transparent;
@@ -76,6 +75,16 @@ def set_background_and_styles():
     div.st-emotion-cache-k7vsyb:has(input:checked) {{ background-color: #64FFDA; }}
     div.st-emotion-cache-k7vsyb label {{ color: #64FFDA !important; font-weight: bold; font-size: 1.1rem; }}
     div.st-emotion-cache-k7vsyb:has(input:checked) label {{ color: #000000 !important; }}
+
+    /* Sidebar link style */
+    .st-emotion-cache-1cypcdb a {{
+        color: #b0b0b0;
+        text-decoration: none;
+    }}
+    .st-emotion-cache-1cypcdb a:hover {{
+        color: #64FFDA;
+        text-decoration: none;
+    }}
     </style>
     """
     st.markdown(bg_style, unsafe_allow_html=True)
@@ -84,31 +93,35 @@ def set_background_and_styles():
 # --- UI Section Functions ---
 
 def display_sidebar_nav():
-    """NEW: Displays a sticky sidebar for easy navigation."""
+    """CORRECTED: Displays a sticky sidebar for easy navigation using st.markdown."""
     with st.sidebar:
         st.markdown("<h2 style='color: #64FFDA;'>Navigation</h2>", unsafe_allow_html=True)
-        st.page_link("#quantum-explained-visually", label="Introduction")
-        st.page_link("#visualizing-atomic-structure-animated", label="Atomic Structure")
-        st.page_link("#the-choice-peace-or-destruction", label="The Choice")
-        st.page_link("#visualizing-superposition-measurement", label="Superposition & Measurement")
-        st.page_link("#visualizing-quantum-entanglement", label="Entanglement")
-        st.page_link("#key-figures-in-quantum-mechanics", label="Key Figures")
-        st.page_link("#test-your-knowledge-quantum-quiz", label="Quantum Quiz")
-        st.page_link("#timeline-of-quantum-physics", label="Timeline")
+        st.markdown("[Introduction](#introduction)")
+        st.markdown("[Atomic Structure](#atomic-structure)")
+        st.markdown("[The Choice: Peace or Destruction](#the-choice)")
+        st.markdown("[Superposition & Measurement](#superposition-measurement)")
+        st.markdown("[Quantum Entanglement](#quantum-entanglement)")
+        st.markdown("[Key Figures](#key-figures)")
+        st.markdown("[Quantum Quiz](#quantum-quiz)")
+        st.markdown("[Timeline](#timeline)")
+
 
 def display_header_and_choice():
     """Displays the header and the main path choice radio buttons."""
-    st.markdown("<h1 id='quantum-explained-visually' style='text-align: center; color: #64FFDA;'>Quantum Explained Visually</h1>", unsafe_allow_html=True)
+    # ADDED ID
+    st.markdown("<h1 id='introduction' style='text-align: center; color: #64FFDA;'>Quantum Explained Visually</h1>", unsafe_allow_html=True)
     st.markdown("<h4 style='text-align: center; color: #b0b0b0;'>Same atom: peaceful energy or devastating weapon?</h4>", unsafe_allow_html=True)
     st.markdown("---")
     
-    st.markdown("<h3 id='the-choice-peace-or-destruction' style='text-align: center; color: #e0e0e0;'>Choose the path of humanity:</h3>", unsafe_allow_html=True)
+    # ADDED ID
+    st.markdown("<h3 id='the-choice' style='text-align: center; color: #e0e0e0;'>Choose the path of humanity:</h3>", unsafe_allow_html=True)
     choice = st.radio("", ["☮ Peace", "💣 Destruction"], horizontal=True, label_visibility="collapsed")
     return choice
 
 def display_atomic_structure():
     """IMPROVED: Continuously animated atomic structure using st.rerun()."""
-    st.header("🔬 Visualizing Atomic Structure (Animated)")
+    # ADDED ID
+    st.markdown("<h2 id='atomic-structure'>🔬 Visualizing Atomic Structure (Animated)</h2>", unsafe_allow_html=True)
     animation_speed = st.slider("Electron Orbit Speed", 0.5, 5.0, 1.0, 0.1, key="speed_slider")
     
     t = st.session_state.frame * 0.01 * animation_speed
@@ -162,21 +175,19 @@ def display_destruction_path():
         if lottie: st_lottie(lottie, height=200, key="destruction_lottie")
 
 def display_superposition_and_entanglement():
-    """NEW: Section for Superposition and Entanglement visualizations."""
+    """Section for Superposition and Entanglement visualizations."""
     st.markdown("---")
-    st.header("🌀 Visualizing Core Quantum Concepts")
+    st.markdown("<h2 id='superposition-measurement'>🌀 Visualizing Core Quantum Concepts</h2>", unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.subheader("Visualizing Superposition & Measurement")
+        st.subheader("Superposition & Measurement")
         
-        # Lottie URLs
-        lottie_superposition_url = "https://assets3.lottiefiles.com/packages/lf20_jG1r46.json" # Spinning sphere
-        lottie_state0_url = "https://assets3.lottiefiles.com/packages/lf20_cUG5w3.json" # Blue static
-        lottie_state1_url = "https://assets4.lottiefiles.com/packages/lf20_awv8l1g9.json" # Red static
+        lottie_superposition_url = "https://assets3.lottiefiles.com/packages/lf20_jG1r46.json"
+        lottie_state0_url = "https://assets3.lottiefiles.com/packages/lf20_cUG5w3.json"
+        lottie_state1_url = "https://assets4.lottiefiles.com/packages/lf20_awv8l1g9.json"
         
-        # Logic to display correct animation
         if st.session_state.superposition_state == "superposition":
             lottie_display = load_lottie_from_url(lottie_superposition_url)
             st.markdown("A qubit can be both 0 and 1 at once. It's in a **superposition**.")
@@ -198,11 +209,12 @@ def display_superposition_and_entanglement():
             st.rerun()
 
     with col2:
-        st.subheader("Visualizing Quantum Entanglement")
+        # ADDED ID
+        st.markdown("<h3 id='quantum-entanglement' style='margin-top:0;'>Quantum Entanglement</h3>", unsafe_allow_html=True)
         st.markdown("Two particles linked instantly. Measure one, and you know the state of the other.")
         
-        lottie_entangled_up = "https://assets5.lottiefiles.com/packages/lf20_o25zt6py.json" # Arrow up
-        lottie_entangled_down = "https://assets5.lottiefiles.com/packages/lf20_y0i7cp5t.json" # Arrow down
+        lottie_entangled_up = "https://assets5.lottiefiles.com/packages/lf20_o25zt6py.json"
+        lottie_entangled_down = "https://assets5.lottiefiles.com/packages/lf20_y0i7cp5t.json"
 
         particle_A, particle_B = st.columns(2)
         with particle_A:
@@ -218,9 +230,10 @@ def display_superposition_and_entanglement():
 
 
 def display_key_figures():
-    """NEW: Section for key figures in quantum mechanics."""
+    """Section for key figures in quantum mechanics."""
     st.markdown("---")
-    st.header("🧠 Key Figures in Quantum Mechanics")
+    # ADDED ID
+    st.markdown("<h2 id='key-figures'>🧠 Key Figures in Quantum Mechanics</h2>", unsafe_allow_html=True)
     
     figures = {
         "Max Planck": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Max_Planck_%281858-1947%29.jpg",
@@ -245,9 +258,10 @@ def display_key_figures():
 
 
 def display_quiz():
-    """NEW: Interactive quantum quiz."""
+    """Interactive quantum quiz."""
     st.markdown("---")
-    st.header("📝 Test Your Knowledge: Quantum Quiz")
+    # ADDED ID
+    st.markdown("<h2 id='quantum-quiz'>📝 Test Your Knowledge: Quantum Quiz</h2>", unsafe_allow_html=True)
 
     if st.session_state.quiz_submitted:
         st.success(f"Quiz Complete! Your score: {st.session_state.quiz_score}/2")
@@ -278,7 +292,8 @@ def display_quiz():
 def display_timeline():
     """Displays the interactive timeline."""
     st.markdown("---")
-    st.header("📜 Timeline of Quantum Physics")
+    # ADDED ID
+    st.markdown("<h2 id='timeline'>📜 Timeline of Quantum Physics</h2>", unsafe_allow_html=True)
     try:
         with open("timeline.json", "r", encoding="utf-8") as f:
             data = json.load(f)
@@ -292,8 +307,6 @@ set_background_and_styles()
 display_sidebar_nav()
 
 # Main content area
-st.markdown("<div id='main-content'>", unsafe_allow_html=True)
-
 choice = display_header_and_choice()
 st.markdown("---")
 
@@ -305,7 +318,6 @@ if choice == "☮ Peace":
 else:
     display_destruction_path()
 
-# New sections added here
 display_superposition_and_entanglement()
 display_key_figures()
 display_quiz()
@@ -313,7 +325,6 @@ display_timeline()
 
 st.markdown("---")
 st.caption("Created by Nakul | Enhanced with interactive features by Gemini | Inspired by the profound ethics of scientific discovery.")
-st.markdown("</div>", unsafe_allow_html=True)
 
 # --- Animation Loop Control ---
 st.session_state.frame += 1
