@@ -92,7 +92,7 @@ def load_lottie_from_local(filepath: str):
         with open(filepath, "r") as f:
             return json.load(f)
     except FileNotFoundError:
-        st.error(f"❌ Lottie file not found at {filepath}. Please ensure the JSON file is in the same directory.")
+        st.error(f"❌ Lottie file not found at {filepath}. Please ensure the JSON file is in the same directory and committed to GitHub.")
         return None
     except Exception as e:
         st.error(f"❌ Error loading Lottie file from {filepath}: {e}")
@@ -228,7 +228,7 @@ else:
     with col1:
         st.warning("☠️ **Hiroshima (August 6, 1945):** An estimated 140,000 lives lost, a city vaporized in an instant, and the horrifying dawn of the nuclear age.")
         st.warning("☠️ **Nagasaki (August 9, 1945):** Another 74,000 lives extinguished, demonstrating the horrifying scale of atomic warfare.")
-        st.warning("⚠️ **Long-term Radiation Effects:** Survivors faced severe health issues, including cancers and genetic mutations, for decades due to lingering radiation.")
+        st.warning("⚠️ **Long-term Radiation Effects:** Survivors faced severe health issues, including cancers and genetic mutations, for decades dues to lingering radiation.")
         st.warning("⚠️ **Environmental Devastation:** The blasts caused widespread physical destruction and introduced radioactive fallout that contaminated land and water.")
 
 
