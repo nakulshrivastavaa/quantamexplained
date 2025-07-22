@@ -159,6 +159,26 @@ for i in range(100): # Loop for 100 frames of animation
 
 st.markdown("---")
 
+# --- Einstein's Quote and Animation ---
+st.header("🎲 Einstein's Dilemma: God Doesn't Play Dice")
+st.markdown("<p style='color: gray;'>Albert Einstein's famous resistance to the probabilistic nature of quantum mechanics.</p>", unsafe_allow_html=True)
+
+col_quote, col_animation = st.columns([2, 1])
+
+with col_quote:
+    st.markdown("<h3 style='text-align: center; color: #BB86FC;'>\"God does not play dice with the universe.\"</h3>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: gray;'>- Albert Einstein</p>", unsafe_allow_html=True)
+
+with col_animation:
+    lottie_dice = load_lottieurl("https://assets10.lottiefiles.com/packages/lf20_mxgd762x.json") # Dice rolling animation
+    if lottie_dice:
+        st_lottie(lottie_dice, speed=1, reverse=False, loop=True, quality="high", height=200)
+    else:
+        st.image("https://upload.wikimedia.org/wikipedia/commons/4/47/Dice_roll_animation.gif", caption="Conceptual representation of randomness", use_container_width=True)
+
+st.markdown("---")
+# --- End of Einstein's Quote and Animation ---
+
 # ☮️ Peace Path
 if choice == "☮️ Peace":
     st.header("🌿 Quantum for Peace: Harnessing Nature's Power")
@@ -236,6 +256,12 @@ if neutron_initiates_fission:
 """, language="python")
 
     st.markdown("> **\"Now I am become Death, the Destroyer of Worlds.\"** — *J. Robert Oppenheimer, quoting the Bhagavad Gita upon witnessing the first atomic bomb test.*")
+
+    # --- ADDED: Image below Oppenheimer quote ---
+    st.image("./oppenheimer_test_image.jpg", caption="Trinity Test, the first atomic bomb detonation (Conceptual)", use_container_width=True)
+    # Make sure 'oppenheimer_test_image.jpg' is in your folder and committed to GitHub!
+    # You can change the image file name and caption as needed.
+    # --- END ADDED ---
 
     try:
         # Assuming oppenheimer_theme.mp3 is in the same directory as your script
