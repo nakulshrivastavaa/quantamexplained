@@ -17,7 +17,7 @@ st.set_page_config(page_title="Quantum Explained", layout="wide")
 # --- Background Setting Function ---
 # This function applies a custom background to the Streamlit app.
 # You can choose between an image background or a solid/gradient color.
-def set_background(image_file=None, gradient_colors=None):
+def set_background(image_file=None, gradient_colors=blue):
     """
     Sets a background for the Streamlit app.
     Args:
