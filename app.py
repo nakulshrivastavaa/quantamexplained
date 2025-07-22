@@ -93,7 +93,7 @@ def set_background_and_styles():
 # --- UI Section Functions ---
 
 def display_sidebar_nav():
-    """CORRECTED: Displays a sticky sidebar for easy navigation using st.markdown."""
+    """Displays a sticky sidebar for easy navigation using st.markdown."""
     with st.sidebar:
         st.markdown("<h2 style='color: #64FFDA;'>Navigation</h2>", unsafe_allow_html=True)
         st.markdown("[Introduction](#introduction)")
@@ -108,19 +108,16 @@ def display_sidebar_nav():
 
 def display_header_and_choice():
     """Displays the header and the main path choice radio buttons."""
-    # ADDED ID
     st.markdown("<h1 id='introduction' style='text-align: center; color: #64FFDA;'>Quantum Explained Visually</h1>", unsafe_allow_html=True)
     st.markdown("<h4 style='text-align: center; color: #b0b0b0;'>Same atom: peaceful energy or devastating weapon?</h4>", unsafe_allow_html=True)
     st.markdown("---")
     
-    # ADDED ID
     st.markdown("<h3 id='the-choice' style='text-align: center; color: #e0e0e0;'>Choose the path of humanity:</h3>", unsafe_allow_html=True)
     choice = st.radio("", ["☮ Peace", "💣 Destruction"], horizontal=True, label_visibility="collapsed")
     return choice
 
 def display_atomic_structure():
-    """IMPROVED: Continuously animated atomic structure using st.rerun()."""
-    # ADDED ID
+    """Continuously animated atomic structure using st.rerun()."""
     st.markdown("<h2 id='atomic-structure'>🔬 Visualizing Atomic Structure (Animated)</h2>", unsafe_allow_html=True)
     animation_speed = st.slider("Electron Orbit Speed", 0.5, 5.0, 1.0, 0.1, key="speed_slider")
     
@@ -209,7 +206,6 @@ def display_superposition_and_entanglement():
             st.rerun()
 
     with col2:
-        # ADDED ID
         st.markdown("<h3 id='quantum-entanglement' style='margin-top:0;'>Quantum Entanglement</h3>", unsafe_allow_html=True)
         st.markdown("Two particles linked instantly. Measure one, and you know the state of the other.")
         
@@ -232,7 +228,6 @@ def display_superposition_and_entanglement():
 def display_key_figures():
     """Section for key figures in quantum mechanics."""
     st.markdown("---")
-    # ADDED ID
     st.markdown("<h2 id='key-figures'>🧠 Key Figures in Quantum Mechanics</h2>", unsafe_allow_html=True)
     
     figures = {
@@ -260,7 +255,6 @@ def display_key_figures():
 def display_quiz():
     """Interactive quantum quiz."""
     st.markdown("---")
-    # ADDED ID
     st.markdown("<h2 id='quantum-quiz'>📝 Test Your Knowledge: Quantum Quiz</h2>", unsafe_allow_html=True)
 
     if st.session_state.quiz_submitted:
@@ -290,16 +284,28 @@ def display_quiz():
             st.rerun()
 
 def display_timeline():
-    """Displays the interactive timeline."""
+    """UPDATED: Displays the interactive timeline from data embedded in the script."""
     st.markdown("---")
-    # ADDED ID
     st.markdown("<h2 id='timeline'>📜 Timeline of Quantum Physics</h2>", unsafe_allow_html=True)
-    try:
-        with open("timeline.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
-        timeline(data, height=600)
-    except FileNotFoundError:
-        st.error("❌ timeline.json not found. Please add the file to your project folder.")
+
+    # The timeline data is now a Python list of dictionaries
+    timeline_data = [
+        { "start_date": {"year": "1900", "month": "12", "day": "14"}, "text": {"headline": "Planck's Quantum Hypothesis", "text": "Max Planck introduces the idea that energy is emitted or absorbed in discrete packets called quanta, marking the birth of quantum mechanics."}, "display_date": "December 14, 1900"},
+        { "start_date": {"year": "1905"}, "text": {"headline": "Einstein and the Photoelectric Effect", "text": "Albert Einstein explains the photoelectric effect by postulating that light consists of discrete energy quanta (photons)."}, "display_date": "1905"},
+        { "start_date": {"year": "1913"}, "text": {"headline": "Bohr Model of the Atom", "text": "Niels Bohr proposes a model where electrons orbit the nucleus in specific energy levels, explaining atomic spectra."}, "display_date": "1913"},
+        { "start_date": {"year": "1925"}, "text": {"headline": "Heisenberg's Matrix Mechanics", "text": "Werner Heisenberg develops a mathematical framework for quantum mechanics based on matrices."}, "display_date": "1925"},
+        { "start_date": {"year": "1926"}, "text": {"headline": "Schrödinger's Wave Equation", "text": "Erwin Schrödinger formulates a differential equation that describes how the quantum state of a physical system evolves over time."}, "display_date": "1926"},
+        { "start_date": {"year": "1927"}, "text": {"headline": "Heisenberg's Uncertainty Principle", "text": "Heisenberg states that it's impossible to simultaneously know precisely both the position and momentum of a particle."}, "display_date": "1927"},
+        { "start_date": {"year": "1942"}, "text": {"headline": "First Self-Sustaining Nuclear Chain Reaction", "text": "Enrico Fermi leads the team achieving the first controlled nuclear chain reaction at the University of Chicago."}, "display_date": "December 2, 1942"},
+        { "start_date": {"year": "1945"}, "text": {"headline": "Atomic Bombs Used (Hiroshima & Nagasaki)", "text": "The first and only use of atomic weapons in warfare."}, "display_date": "August 1945"},
+        { "start_date": {"year": "1947"}, "text": {"headline": "Discovery of the Transistor", "text": "John Bardeen, Walter Brattain, and William Shockley invent the transistor, a key component in modern electronics, rooted in quantum mechanics."}, "display_date": "1947"},
+        { "start_date": {"year": "1964"}, "text": {"headline": "Bell's Theorem", "text": "John Bell proposes a theorem that could experimentally test local realism versus quantum entanglement."}, "display_date": "1964"},
+        { "start_date": {"year": "2000"}, "text": {"headline": "Quantum Computing Advances", "text": "Significant strides in quantum computing research begin, with early prototypes and theoretical breakthroughs."}, "display_date": "2000s"},
+        { "start_date": {"year": "2019"}, "text": {"headline": "Quantum Supremacy Claim (Google)", "text": "Google announces its Sycamore processor achieved quantum supremacy, performing a calculation beyond the capabilities of classical supercomputers."}, "display_date": "2019"}
+    ]
+    
+    # Use the data directly
+    timeline(timeline_data, height=600)
 
 
 # --- Main App Execution ---
