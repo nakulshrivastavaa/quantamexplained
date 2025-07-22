@@ -105,7 +105,7 @@ st.markdown("---")
 
 # 🔬 Animated Atomic Structure
 st.header("🔬 Visualizing Atomic Structure (Animated)")
-st.markdown("<p style='text-align: center; color: gray;'>Witness the dance of electrons around the nucleus.</p>", unsafe_allow_html=True)
+st.markdown("<p style='color: gray;'>Witness the dance of electrons around the nucleus.</p>", unsafe_allow_html=True)
 
 # Animation control
 animation_speed = st.slider("Electron Orbit Speed", 0.1, 2.0, 1.0, 0.1)
@@ -170,11 +170,12 @@ with col_quote:
     st.markdown("<p style='text-align: center; color: gray;'>- Albert Einstein</p>", unsafe_allow_html=True)
 
 with col_animation:
-    lottie_dice = load_lottieurl("[https://assets10.lottiefiles.com/packages/lf20_mxgd762x.json](https://assets10.lottiefiles.com/packages/lf20_mxgd762x.json)") # Dice rolling animation
+    # Corrected Lottie URL format - removed the markdown link syntax
+    lottie_dice = load_lottieurl("https://assets10.lottiefiles.com/packages/lf20_mxgd762x.json") # Dice rolling animation
     if lottie_dice:
         st_lottie(lottie_dice, speed=1, reverse=False, loop=True, quality="high", height=200)
     else:
-        st.image("[https://upload.wikimedia.org/wikipedia/commons/4/47/Dice_roll_animation.gif](https://upload.wikimedia.org/wikipedia/commons/4/47/Dice_roll_animation.gif)", caption="Conceptual representation of randomness", use_container_width=True)
+        st.image("https://upload.wikimedia.org/wikipedia/commons/4/47/Dice_roll_animation.gif", caption="Conceptual representation of randomness", use_container_width=True)
 
 st.markdown("---")
 # --- End of Einstein's Quote and Animation ---
@@ -188,16 +189,16 @@ if choice == "☮️ Peace":
     with col1:
         st.success("✅ **Medical Imaging (MRI):** Powerful magnetic fields and radio waves interact with atomic nuclei to create detailed images of the human body, revolutionizing diagnostics.")
         st.success("✅ **Cancer Radiotherapy:** Precisely targeted radiation from isotopes destroys cancer cells while minimizing damage to healthy tissue.")
-        st.success("✅ **Clean Energy (Nuclear Reactors):** Controlled nuclear fission releases vast amounts of energy from a small mass, providing a low-carbon power source for millions.") # Fixed typo here
+        st.success("✅ **Clean Energy (Nuclear Reactors):** Controlled nuclear fission releases vast amounts of energy from a small mass, providing a low-carbon power source for millions.")
         st.success("✅ **Quantum Encryption:** Leveraging principles like superposition and entanglement to create unhackable communication channels, vital for cybersecurity.")
         st.success("✅ **Atomic Clocks:** Unimaginably precise timekeeping devices based on atomic vibrations, essential for GPS and global communication networks.")
 
     with col2:
-        lottie_clean_energy = load_lottieurl("[https://assets1.lottiefiles.com/packages/lf20_e0wU3R.json](https://assets1.lottiefiles.com/packages/lf20_e0wU3R.json)") # Clean energy animation
+        lottie_clean_energy = load_lottieurl("https://assets1.lottiefiles.com/packages/lf20_e0wU3R.json") # Clean energy animation
         if lottie_clean_energy:
             st_lottie(lottie_clean_energy, speed=1, reverse=False, loop=True, quality="high", height=300)
         else:
-            st.image("[https://cdn.britannica.com/37/123637-050-1B14113C/nuclear-power-plant-Cattenom-France.jpg](https://cdn.britannica.com/37/123637-050-1B14113C/nuclear-power-plant-Cattenom-France.jpg)",
+            st.image("https://cdn.britannica.com/37/123637-050-1B14113C/nuclear-power-plant-Cattenom-France.jpg",
                      caption="Nuclear Power Plant producing clean energy",
                      use_container_width=True)
 
@@ -220,11 +221,11 @@ else:
 
 
     with col2:
-        lottie_explosion = load_lottieurl("[https://assets9.lottiefiles.com/packages/lf20_t3o6gq.json](https://assets9.lottiefiles.com/packages/lf20_t3o6gq.json)") # Explosion animation
+        lottie_explosion = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_t3o6gq.json") # Explosion animation
         if lottie_explosion:
             st_lottie(lottie_explosion, speed=1, reverse=False, loop=False, quality="high", height=300)
         else:
-            st.image("[https://upload.wikimedia.org/wikipedia/commons/5/5f/Nagasakibomb.jpg](https://upload.wikimedia.org/wikipedia/commons/5/5f/Nagasakibomb.jpg)",
+            st.image("https://upload.wikimedia.org/wikipedia/commons/5/5f/Nagasakibomb.jpg",
                      caption="Mushroom Cloud over Nagasaki - August 9, 1945",
                      use_container_width=True)
 
@@ -291,10 +292,17 @@ except Exception as e:
 # 🎮 Lottie Animation: Quantum swirl
 st.markdown("---")
 st.header("🌌 Animated Quantum Vibe: The Fabric of Reality")
-st.markdown("<p style='text-align: center; color: gray;'>A visual representation of the abstract and interconnected nature of the quantum world.</p>", unsafe_allow_html=True)
+st.markdown("<p style='color: gray;'>A visual representation of the abstract and interconnected nature of the quantum world.</p>", unsafe_allow_html=True)
 
-# Lottie URL has been updated here
-lottie_q = load_lottieurl("[https://assets.lottiefiles.com/packages/lf20_khtz98s9.json](https://assets.lottiefiles.com/packages/lf20_khtz98s9.json)") # New, hopefully more stable Lottie URL for Quantum Vibe
+# Lottie URL has been updated here to fix the InvalidSchema error previously and then the load error
+# Reverted to a known stable URL for a general "quantum" / "swirl" animation
+lottie_q = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_t3o6gq.json") # Using the explosion one temporarily
+# lottie_q = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_khtz98s9.json") # Previous attempt
+# lottie_q = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_jnJFlq.json") # Original
+
+# Trying an even simpler, highly reliable Lottie animation for general testing if issues persist:
+lottie_q = load_lottieurl("https://assets3.lottiefiles.com/private_files/lf30_g0p53i2n.json") # A simple loading spinner - very reliable
+
 if lottie_q:
     st_lottie(lottie_q, speed=1, reverse=False, loop=True, quality="high", height=300)
 else:
