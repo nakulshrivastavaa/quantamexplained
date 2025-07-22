@@ -86,12 +86,25 @@ set_background(gradient_colors=['#000000', '#2C3E50']) # Dark gradient for a sle
 
 
 # --- Helper Functions for Lottie Animations ---
-@st.cache_data
-def load_lottieurl(url: str):
+# This function is now specifically for loading local Lottie JSON files
+def load_lottie_from_local(filepath: str):
+    try:
+        with open(filepath, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        st.error(f"❌ Lottie file not found at {filepath}. Please ensure the JSON file is in the same directory.")
+        return None
+    except Exception as e:
+        st.error(f"❌ Error loading Lottie file from {filepath}: {e}")
+        return None
+
+# For external URLs, a simpler direct call (without @st.cache_data)
+def load_lottie_from_url(url: str):
     r = requests.get(url)
     if r.status_code != 200:
         return None
     return r.json()
+
 
 # 🕱️ Title
 st.markdown("<h1 style='text-align: center; color: #64FFDA;'> Quantum Explained Visually</h1>", unsafe_allow_html=True)
@@ -170,8 +183,7 @@ with col_quote:
     st.markdown("<p style='text-align: center; color: gray;'>- Albert Einstein</p>", unsafe_allow_html=True)
 
 with col_animation:
-    # Corrected Lottie URL format - removed the markdown link syntax
-    lottie_dice = load_lottieurl("https://assets10.lottiefiles.com/packages/lf20_mxgd762x.json") # Dice rolling animation
+    lottie_dice = load_lottie_from_url("https://assets10.lottiefiles.com/packages/lf20_mxgd762x.json") # Dice rolling animation
     if lottie_dice:
         st_lottie(lottie_dice, speed=1, reverse=False, loop=True, quality="high", height=200)
     else:
@@ -194,7 +206,7 @@ if choice == "☮️ Peace":
         st.success("✅ **Atomic Clocks:** Unimaginably precise timekeeping devices based on atomic vibrations, essential for GPS and global communication networks.")
 
     with col2:
-        lottie_clean_energy = load_lottieurl("https://assets1.lottiefiles.com/packages/lf20_e0wU3R.json") # Clean energy animation
+        lottie_clean_energy = load_lottie_from_url("https://assets1.lottiefiles.com/packages/lf20_e0wU3R.json") # Clean energy animation
         if lottie_clean_energy:
             st_lottie(lottie_clean_energy, speed=1, reverse=False, loop=True, quality="high", height=300)
         else:
@@ -221,7 +233,7 @@ else:
 
 
     with col2:
-        lottie_explosion = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_t3o6gq.json") # Explosion animation
+        lottie_explosion = load_lottie_from_url("https://assets9.lottiefiles.com/packages/lf20_t3o6gq.json") # Explosion animation
         if lottie_explosion:
             st_lottie(lottie_explosion, speed=1, reverse=False, loop=False, quality="high", height=300)
         else:
@@ -289,24 +301,19 @@ except FileNotFoundError:
 except Exception as e:
     st.error(f"❌ Timeline failed to load: {e}. Please check the format of your `timeline.json` file.")
 
-# 🎮 Lottie Animation: Quantum swirl
+# 🎮 Lottie Animation: Quantum swirl - Now loaded from local file
 st.markdown("---")
 st.header("🌌 Animated Quantum Vibe: The Fabric of Reality")
 st.markdown("<p style='color: gray;'>A visual representation of the abstract and interconnected nature of the quantum world.</p>", unsafe_allow_html=True)
 
-# Lottie URL has been updated here to fix the InvalidSchema error previously and then the load error
-# Reverted to a known stable URL for a general "quantum" / "swirl" animation
-lottie_q = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_t3o6gq.json") # Using the explosion one temporarily
-# lottie_q = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_khtz98s9.json") # Previous attempt
-# lottie_q = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_jnJFlq.json") # Original
-
-# Trying an even simpler, highly reliable Lottie animation for general testing if issues persist:
-lottie_q = load_lottieurl("https://assets3.lottiefiles.com/private_files/lf30_g0p53i2n.json") # A simple loading spinner - very reliable
+# Lottie URL for Quantum Vibe - Now loading from LOCAL FILE
+# Ensure 'quantum_vibe.json' is downloaded and in your project folder
+lottie_q = load_lottie_from_local("./quantum_vibe.json") # Call the new local loading function
 
 if lottie_q:
     st_lottie(lottie_q, speed=1, reverse=False, loop=True, quality="high", height=300)
 else:
-    st.info("Could not load Lottie animation for Quantum Vibe. Check internet connection or Lottie URL.")
+    st.info("Could not load Lottie animation for Quantum Vibe. Check local file path or internet connection.")
 
 # 🎥 Centered Videos
 st.markdown("---")
