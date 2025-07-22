@@ -12,327 +12,222 @@ from streamlit_timeline import timeline
 # --- Page Configuration ---
 st.set_page_config(page_title="Quantum Explained Visually", layout="wide")
 
-# --- Initialize Session State ---
-# For continuous animations
+# --- Initialize Session State (CRUCIAL for new animations) ---
 if 'frame' not in st.session_state:
     st.session_state.frame = 0
-# For the quiz
-if 'quiz_score' not in st.session_state:
-    st.session_state.quiz_score = 0
-if 'quiz_submitted' not in st.session_state:
-    st.session_state.quiz_submitted = False
-# For superposition collapse
-if 'superposition_state' not in st.session_state:
-    st.session_state.superposition_state = "superposition" # 'superposition', '0', or '1'
+if 'tunneling_pos' not in st.session_state:
+    st.session_state.tunneling_pos = -5.0
 
-
-# --- Asset & Style Loading ---
-
+# --- Asset Loading & Styling ---
 def load_lottie_from_url(url: str):
-    """Loads a Lottie animation from a URL with error handling."""
     try:
         r = requests.get(url, timeout=10)
-        r.raise_for_status()
-        return r.json()
-    except requests.exceptions.RequestException as e:
+        if r.status_code == 200:
+            return r.json()
+    except requests.exceptions.RequestException:
         return None
+    return None
 
 def set_background_and_styles():
-    """Sets a gradient background and injects custom CSS for particles and other styles."""
-    gradient_str = ", ".join(['#000000', '#1a1a2e', '#2c3e50'])
-    bg_style = f"""
+    """Sets a gradient background and injects custom CSS."""
+    bg_style = """
     <style>
-    /* Main background gradient */
-    .stApp {{
-        background: linear-gradient(135deg, {gradient_str});
+    .stApp {
+        background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #2c3e50 100%);
         background-attachment: fixed;
-    }}
-
-    /* Animated particle background */
-    @keyframes move-particles {{
-        0% {{ transform: translateY(0); }}
-        100% {{ transform: translateY(-100vh); }}
-    }}
-    .stApp::before {{
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 200vh;
-        background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-        background-size: 30px 30px;
-        animation: move-particles 50s linear infinite;
-        z-index: -1;
-    }}
-
-    /* Custom radio buttons */
-    div.st-emotion-cache-1t2qdok {{ justify-content: center; gap: 1rem; }}
-    div.st-emotion-cache-k7vsyb {{
-        border: 1px solid #64FFDA; background-color: transparent;
-        padding: 10px 25px; border-radius: 30px; transition: all 0.3s ease;
-    }}
-    div.st-emotion-cache-k7vsyb:has(input:checked) {{ background-color: #64FFDA; }}
-    div.st-emotion-cache-k7vsyb label {{ color: #64FFDA !important; font-weight: bold; font-size: 1.1rem; }}
-    div.st-emotion-cache-k7vsyb:has(input:checked) label {{ color: #000000 !important; }}
-
+    }
     /* Sidebar link style */
-    .st-emotion-cache-1cypcdb a {{
+    .st-emotion-cache-1cypcdb a {
         color: #b0b0b0;
         text-decoration: none;
-    }}
-    .st-emotion-cache-1cypcdb a:hover {{
+    }
+    .st-emotion-cache-1cypcdb a:hover {
         color: #64FFDA;
         text-decoration: none;
-    }}
+    }
     </style>
     """
     st.markdown(bg_style, unsafe_allow_html=True)
 
-
 # --- UI Section Functions ---
 
-def display_sidebar_nav():
-    """Displays a sticky sidebar for easy navigation using st.markdown."""
+def display_sidebar():
+    """NEW: Displays a sticky sidebar for easy navigation."""
     with st.sidebar:
         st.markdown("<h2 style='color: #64FFDA;'>Navigation</h2>", unsafe_allow_html=True)
         st.markdown("[Introduction](#introduction)")
         st.markdown("[Atomic Structure](#atomic-structure)")
+        st.markdown("[Core Concepts](#core-concepts)")
         st.markdown("[The Choice: Peace or Destruction](#the-choice)")
-        st.markdown("[Superposition & Measurement](#superposition-measurement)")
-        st.markdown("[Quantum Entanglement](#quantum-entanglement)")
-        st.markdown("[Key Figures](#key-figures)")
-        st.markdown("[Quantum Quiz](#quantum-quiz)")
         st.markdown("[Timeline](#timeline)")
+        st.markdown("[Key Figures & Videos](#key-figures-videos)")
+        st.markdown("[Further Learning](#further-learning)")
 
-
-def display_header_and_choice():
-    """Displays the header and the main path choice radio buttons."""
+def display_header():
+    """Displays the main title and introduction."""
     st.markdown("<h1 id='introduction' style='text-align: center; color: #64FFDA;'>Quantum Explained Visually</h1>", unsafe_allow_html=True)
-    st.markdown("<h4 style='text-align: center; color: #b0b0b0;'>Same atom: peaceful energy or devastating weapon?</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='text-align: center; color: #b0b0b0;'>Same atom: peaceful energy or devastating weapon? A journey through quantum possibilities.</h4>", unsafe_allow_html=True)
     st.markdown("---")
-    
-    st.markdown("<h3 id='the-choice' style='text-align: center; color: #e0e0e0;'>Choose the path of humanity:</h3>", unsafe_allow_html=True)
-    choice = st.radio("", ["☮ Peace", "💣 Destruction"], horizontal=True, label_visibility="collapsed")
-    return choice
 
-def display_atomic_structure():
-    """Continuously animated atomic structure using st.rerun()."""
-    st.markdown("<h2 id='atomic-structure'>🔬 Visualizing Atomic Structure (Animated)</h2>", unsafe_allow_html=True)
-    animation_speed = st.slider("Electron Orbit Speed", 0.5, 5.0, 1.0, 0.1, key="speed_slider")
-    
+def display_atomic_structure_improved():
+    """IMPROVED: Continuously animated atomic structure using st.rerun()."""
+    st.markdown("<h2 id='atomic-structure'>🔬 Visualizing Atomic Structure (Continuous Animation)</h2>", unsafe_allow_html=True)
+    animation_speed = st.slider("Electron Orbit Speed", 0.5, 5.0, 1.5, 0.1, key="speed_slider")
+
+    # Use session_state for continuous animation
     t = st.session_state.frame * 0.01 * animation_speed
-    
-    nucleus = go.Scatter(x=[0], y=[0], mode='markers', marker=dict(size=40, color='#ff6b6b'), name='Nucleus')
-    electron1 = go.Scatter(x=[np.cos(t)], y=[np.sin(t)], mode='markers', marker=dict(size=15, color='#4d96ff'), name='Electron 1')
-    electron2 = go.Scatter(x=[1.2 * np.cos(-0.8 * t)], y=[1.2 * np.sin(-0.8 * t)], mode='markers', marker=dict(size=15, color='#6bcB77'), name='Electron 2')
-    
-    orbit_t = np.linspace(0, 2 * np.pi, 100)
-    orbit1 = go.Scatter(x=np.cos(orbit_t), y=np.sin(orbit_t), mode='lines', line=dict(color='rgba(77, 150, 255, 0.3)', dash='dot'), showlegend=False)
-    orbit2 = go.Scatter(x=1.2*np.cos(orbit_t), y=1.2*np.sin(orbit_t), mode='lines', line=dict(color='rgba(107, 203, 119, 0.3)', dash='dot'), showlegend=False)
 
-    fig = go.Figure(data=[nucleus, electron1, electron2, orbit1, orbit2])
+    fig = go.Figure()
+    # Nucleus
+    fig.add_trace(go.Scatter(x=[0], y=[0], mode='markers', marker=dict(size=40, color='#ff6b6b'), name='Nucleus'))
+    # Electrons
+    fig.add_trace(go.Scatter(x=[np.cos(t)], y=[np.sin(t)], mode='markers', marker=dict(size=15, color='#4d96ff'), name='Electron 1'))
+    fig.add_trace(go.Scatter(x=[1.2 * np.cos(-0.8 * t)], y=[1.2 * np.sin(-0.8 * t)], mode='markers', marker=dict(size=15, color='#6bcB77'), name='Electron 2'))
+    # Orbits
+    orbit_t = np.linspace(0, 2 * np.pi, 100)
+    fig.add_trace(go.Scatter(x=np.cos(orbit_t), y=np.sin(orbit_t), mode='lines', line=dict(color='rgba(77, 150, 255, 0.3)', dash='dot'), showlegend=False))
+    fig.add_trace(go.Scatter(x=1.2*np.cos(orbit_t), y=1.2*np.sin(orbit_t), mode='lines', line=dict(color='rgba(107, 203, 119, 0.3)', dash='dot'), showlegend=False))
+
     fig.update_layout(
         xaxis=dict(visible=False, range=[-1.5, 1.5]), yaxis=dict(visible=False, scaleanchor="x", scaleratio=1, range=[-1.5, 1.5]),
         showlegend=False, plot_bgcolor="rgba(255, 255, 255, 0.05)", paper_bgcolor="rgba(0,0,0,0)",
         margin=dict(l=0, r=0, t=0, b=0), height=400
     )
     st.plotly_chart(fig, use_container_width=True)
+    st.markdown("---")
 
-def display_peace_path():
-    """Content for the 'Peace' path."""
-    st.header("🌿 Quantum for Peace: Harnessing Nature's Power")
-    col1, col2 = st.columns([2, 1])
+def display_core_concepts():
+    """NEW: Displays visualizations for core quantum concepts."""
+    st.markdown("<h2 id='core-concepts'>🌀 The Weird & Wonderful World of Quantum</h2>", unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
+
     with col1:
+        st.subheader("🎭 Wave-Particle Duality")
+        st.markdown("A quantum object can be a wave or a particle. Observation forces a choice.")
+        lottie_wave = load_lottie_from_url("https://assets8.lottiefiles.com/packages/lf20_bwni5s5t.json")
+        if lottie_wave:
+            st_lottie(lottie_wave, height=200, key="wave")
+
+    with col2:
+        st.subheader("👻 Quantum Tunneling")
+        st.markdown("Particles can 'tunnel' through barriers they shouldn't be able to cross.")
+        x = np.linspace(-5, 5, 400)
+        barrier = np.where((x > -0.5) & (x < 0.5), 10, 0)
+        pos = st.session_state.tunneling_pos
+        wave_packet = np.exp(-((x - pos)**2)) * np.sin(10 * (x - pos))
+
+        fig_tunnel = go.Figure()
+        fig_tunnel.add_trace(go.Scatter(x=x, y=barrier, fill='tozeroy', name='Barrier', line=dict(color='rgba(255, 107, 107, 0.5)')))
+        fig_tunnel.add_trace(go.Scatter(x=x, y=wave_packet + 5, name='Wave Packet', line=dict(color='#64FFDA')))
+        fig_tunnel.update_layout(
+            yaxis=dict(visible=False, range=[-2, 12]), xaxis=dict(visible=False),
+            showlegend=False, plot_bgcolor="rgba(255, 255, 255, 0.05)", paper_bgcolor="rgba(0,0,0,0)",
+            margin=dict(l=0, r=0, t=0, b=0), height=200
+        )
+        st.plotly_chart(fig_tunnel, use_container_width=True)
+    st.markdown("---")
+
+def display_path_choice_and_sections():
+    """Handles the user's choice and displays the relevant peace/destruction path."""
+    st.markdown("<h2 id='the-choice' style='text-align: center;'>Choose the Path of Humanity</h2>", unsafe_allow_html=True)
+    choice = st.radio("", ["☮ Peace", "💣 Destruction"], horizontal=True, label_visibility="collapsed")
+    st.markdown("---")
+
+    if choice == "☮ Peace":
+        st.header("🌿 Quantum for Peace: Harnessing Nature's Power")
         st.success("✅ *Medical Imaging (MRI):* Using nuclear magnetic resonance for diagnostics.")
         st.success("✅ *Clean Energy (Nuclear Reactors):* Controlled fission provides low-carbon power.")
         st.success("✅ *Quantum Computing:* Solving problems impossible for classical computers.")
-    with col2:
-        lottie = load_lottie_from_url("https://assets1.lottiefiles.com/packages/lf20_e0wU3R.json")
-        if lottie: st_lottie(lottie, height=200, key="peace_lottie")
+    else:
+        st.header("💥 The Atomic Bomb: A Terrifying Power")
+        st.warning("☠ *Uncontrolled Fission:* The principle behind the atomic bomb, leading to catastrophic destruction.")
+        st.warning("⚠ *Long-term Fallout:* Lingering radiation causes environmental damage and health crises for generations.")
 
-def display_destruction_path():
-    """Content for the 'Destruction' path."""
-    st.header("💥 The Atomic Bomb: A Terrifying Power")
-    col1, col2 = st.columns([2, 1])
-    with col1:
-        st.warning("☠ *Hiroshima & Nagasaki:* Hundreds of thousands of lives lost instantly.")
-        st.warning("⚠ *Long-term Radiation:* Survivors faced severe health issues for decades.")
-        st.subheader("Interactive Chain Reaction")
-        k = st.slider("Neutron Multiplication Factor (k)", 0.5, 3.0, 1.0, 0.1)
-        if k < 1.0:
-            st.info(f"**Subcritical (k={k}):** The reaction dies out. (Safe in a reactor)")
-        elif k == 1.0:
-            st.success(f"**Critical (k={k}):** The reaction is self-sustaining. (Stable reactor power)")
-        else:
-            st.error(f"**Supercritical (k={k}):** The reaction grows exponentially! (The principle of a bomb)")
-
-    with col2:
-        lottie = load_lottie_from_url("https://assets9.lottiefiles.com/packages/lf20_t3o6gq.json")
-        if lottie: st_lottie(lottie, height=200, key="destruction_lottie")
-
-def display_superposition_and_entanglement():
-    """Section for Superposition and Entanglement visualizations."""
+        st.subheader("📊 Impact Data: The Human Cost")
+        data = pd.DataFrame({
+            "City": ["Hiroshima", "Nagasaki"],
+            "Initial Deaths": [140000, 74000],
+        })
+        st.bar_chart(data.set_index("City"))
     st.markdown("---")
-    st.markdown("<h2 id='superposition-measurement'>🌀 Visualizing Core Quantum Concepts</h2>", unsafe_allow_html=True)
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.subheader("Superposition & Measurement")
-        
-        lottie_superposition_url = "https://assets3.lottiefiles.com/packages/lf20_jG1r46.json"
-        lottie_state0_url = "https://assets3.lottiefiles.com/packages/lf20_cUG5w3.json"
-        lottie_state1_url = "https://assets4.lottiefiles.com/packages/lf20_awv8l1g9.json"
-        
-        if st.session_state.superposition_state == "superposition":
-            lottie_display = load_lottie_from_url(lottie_superposition_url)
-            st.markdown("A qubit can be both 0 and 1 at once. It's in a **superposition**.")
-        elif st.session_state.superposition_state == "0":
-            lottie_display = load_lottie_from_url(lottie_state0_url)
-            st.success("Measured! The qubit collapsed to **State 0**.")
-        else: # state '1'
-            lottie_display = load_lottie_from_url(lottie_state1_url)
-            st.error("Measured! The qubit collapsed to **State 1**.")
-
-        if lottie_display:
-            st_lottie(lottie_display, height=200, key="superposition_lottie")
-
-        if st.button("Measure the Qubit!"):
-            st.session_state.superposition_state = np.random.choice(['0', '1'])
-            st.rerun()
-        if st.button("Reset Qubit"):
-            st.session_state.superposition_state = "superposition"
-            st.rerun()
-
-    with col2:
-        st.markdown("<h3 id='quantum-entanglement' style='margin-top:0;'>Quantum Entanglement</h3>", unsafe_allow_html=True)
-        st.markdown("Two particles linked instantly. Measure one, and you know the state of the other.")
-        
-        lottie_entangled_up = "https://assets5.lottiefiles.com/packages/lf20_o25zt6py.json"
-        lottie_entangled_down = "https://assets5.lottiefiles.com/packages/lf20_y0i7cp5t.json"
-
-        particle_A, particle_B = st.columns(2)
-        with particle_A:
-            st.markdown("Particle A")
-            lottie_A = load_lottie_from_url(lottie_entangled_up)
-            if lottie_A: st_lottie(lottie_A, height=150, key="entangled_A")
-        
-        with particle_B:
-            st.markdown("Particle B")
-            lottie_B = load_lottie_from_url(lottie_entangled_down)
-            if lottie_B: st_lottie(lottie_B, height=150, key="entangled_B")
-        st.info("If Particle A is 'spin up', entangled Particle B must be 'spin down'.")
-
-
-def display_key_figures():
-    """Section for key figures in quantum mechanics."""
-    st.markdown("---")
-    st.markdown("<h2 id='key-figures'>🧠 Key Figures in Quantum Mechanics</h2>", unsafe_allow_html=True)
-    
-    figures = {
-        "Max Planck": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Max_Planck_%281858-1947%29.jpg",
-        "Albert Einstein": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Einstein_1921_by_F_Schmutzer_-_restoration.jpg/800px-Einstein_1921_by_F_Schmutzer_-_restoration.jpg",
-        "Niels Bohr": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Niels_Bohr.jpg/800px-Niels_Bohr.jpg",
-        "J. R. Oppenheimer": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/JROppenheimer-LosAlamos.jpg/800px-JROppenheimer-LosAlamos.jpg"
-    }
-    
-    descriptions = {
-        "Max Planck": "Originated quantum theory in 1900, which revolutionized human understanding of atomic and subatomic processes.",
-        "Albert Einstein": "Explained the photoelectric effect, proposing that light energy is carried in discrete quantized packets (photons).",
-        "Niels Bohr": "Developed the Bohr model of the atom, in which he proposed that energy levels of electrons are discrete.",
-        "J. R. Oppenheimer": "Headed the Manhattan Project, leading to the development of the atomic bomb, and later became a proponent of nuclear control."
-    }
-
-    cols = st.columns(len(figures))
-    for i, (name, image_url) in enumerate(figures.items()):
-        with cols[i]:
-            with st.expander(name, expanded=False):
-                st.image(image_url)
-                st.write(descriptions[name])
-
-
-def display_quiz():
-    """Interactive quantum quiz."""
-    st.markdown("---")
-    st.markdown("<h2 id='quantum-quiz'>📝 Test Your Knowledge: Quantum Quiz</h2>", unsafe_allow_html=True)
-
-    if st.session_state.quiz_submitted:
-        st.success(f"Quiz Complete! Your score: {st.session_state.quiz_score}/2")
-        if st.button("Try Again?"):
-            st.session_state.quiz_score = 0
-            st.session_state.quiz_submitted = False
-            st.rerun()
-        return
-
-    with st.form("quantum_quiz"):
-        st.write("1. Who is credited with originating quantum theory?")
-        q1 = st.radio("q1", ["Einstein", "Bohr", "Planck", "Oppenheimer"], label_visibility="collapsed", horizontal=True)
-
-        st.write("2. The principle that a particle can be in multiple states at once is called:")
-        q2 = st.radio("q2", ["Entanglement", "Superposition", "Uncertainty", "Fission"], label_visibility="collapsed", horizontal=True)
-
-        submitted = st.form_submit_button("Submit Answers")
-        if submitted:
-            score = 0
-            if q1 == "Planck":
-                score += 1
-            if q2 == "Superposition":
-                score += 1
-            st.session_state.quiz_score = score
-            st.session_state.quiz_submitted = True
-            st.rerun()
 
 def display_timeline():
-    """UPDATED: Displays the interactive timeline from data embedded in the script."""
-    st.markdown("---")
+    """Displays the interactive timeline by loading from timeline.json."""
     st.markdown("<h2 id='timeline'>📜 Timeline of Quantum Physics</h2>", unsafe_allow_html=True)
+    try:
+        with open("timeline.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+        timeline(data, height=600)
+    except FileNotFoundError:
+        st.error("❌ timeline.json not found. Please ensure the file is in the same directory as your script.")
+    except Exception as e:
+        st.error(f"❌ Timeline failed to load: {e}. Check the format of your timeline.json file.")
+    st.markdown("---")
 
-    # The timeline data is now a Python list of dictionaries
-    timeline_data = [
-        { "start_date": {"year": "1900", "month": "12", "day": "14"}, "text": {"headline": "Planck's Quantum Hypothesis", "text": "Max Planck introduces the idea that energy is emitted or absorbed in discrete packets called quanta, marking the birth of quantum mechanics."}, "display_date": "December 14, 1900"},
-        { "start_date": {"year": "1905"}, "text": {"headline": "Einstein and the Photoelectric Effect", "text": "Albert Einstein explains the photoelectric effect by postulating that light consists of discrete energy quanta (photons)."}, "display_date": "1905"},
-        { "start_date": {"year": "1913"}, "text": {"headline": "Bohr Model of the Atom", "text": "Niels Bohr proposes a model where electrons orbit the nucleus in specific energy levels, explaining atomic spectra."}, "display_date": "1913"},
-        { "start_date": {"year": "1925"}, "text": {"headline": "Heisenberg's Matrix Mechanics", "text": "Werner Heisenberg develops a mathematical framework for quantum mechanics based on matrices."}, "display_date": "1925"},
-        { "start_date": {"year": "1926"}, "text": {"headline": "Schrödinger's Wave Equation", "text": "Erwin Schrödinger formulates a differential equation that describes how the quantum state of a physical system evolves over time."}, "display_date": "1926"},
-        { "start_date": {"year": "1927"}, "text": {"headline": "Heisenberg's Uncertainty Principle", "text": "Heisenberg states that it's impossible to simultaneously know precisely both the position and momentum of a particle."}, "display_date": "1927"},
-        { "start_date": {"year": "1942"}, "text": {"headline": "First Self-Sustaining Nuclear Chain Reaction", "text": "Enrico Fermi leads the team achieving the first controlled nuclear chain reaction at the University of Chicago."}, "display_date": "December 2, 1942"},
-        { "start_date": {"year": "1945"}, "text": {"headline": "Atomic Bombs Used (Hiroshima & Nagasaki)", "text": "The first and only use of atomic weapons in warfare."}, "display_date": "August 1945"},
-        { "start_date": {"year": "1947"}, "text": {"headline": "Discovery of the Transistor", "text": "John Bardeen, Walter Brattain, and William Shockley invent the transistor, a key component in modern electronics, rooted in quantum mechanics."}, "display_date": "1947"},
-        { "start_date": {"year": "1964"}, "text": {"headline": "Bell's Theorem", "text": "John Bell proposes a theorem that could experimentally test local realism versus quantum entanglement."}, "display_date": "1964"},
-        { "start_date": {"year": "2000"}, "text": {"headline": "Quantum Computing Advances", "text": "Significant strides in quantum computing research begin, with early prototypes and theoretical breakthroughs."}, "display_date": "2000s"},
-        { "start_date": {"year": "2019"}, "text": {"headline": "Quantum Supremacy Claim (Google)", "text": "Google announces its Sycamore processor achieved quantum supremacy, performing a calculation beyond the capabilities of classical supercomputers."}, "display_date": "2019"}
-    ]
-    
-    # Use the data directly
-    timeline(timeline_data, height=600)
+def display_figures_and_videos():
+    """Displays key figures and multimedia content."""
+    st.markdown("<h2 id='key-figures-videos'>Key Figures & Videos</h2>", unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("J. Robert Oppenheimer")
+        st.markdown("> *\"Now I am become Death, the Destroyer of Worlds.\"*")
+        try:
+            st.image("./oppenheimer_test_image.jpg", caption="Trinity Test, July 1945")
+        except FileNotFoundError:
+            st.warning("Image 'oppenheimer_test_image.jpg' not found.")
+        try:
+            with open("oppenheimer_theme.mp3", "rb") as f:
+                st.audio(f.read(), format="audio/mp3")
+        except FileNotFoundError:
+            st.warning("Audio 'oppenheimer_theme.mp3' not found.")
 
+    with col2:
+        st.subheader("Visualizing the Impact")
+        try:
+            with open("atomic_blast.mp4", "rb") as f:
+                st.video(f.read(), format="video/mp4")
+        except FileNotFoundError:
+            st.warning("Video 'atomic_blast.mp4' not found.")
+    st.markdown("---")
+
+def display_further_learning():
+    """NEW: Displays links for further learning."""
+    st.markdown("<h2 id='further-learning'>📚 Further Learning</h2>", unsafe_allow_html=True)
+    st.info("Dive deeper into the fascinating world of quantum mechanics with these resources.")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown("#### 📖 Reading")
+        st.markdown("- [Quantum Mechanics on Wikipedia](https://en.wikipedia.org/wiki/Quantum_mechanics)\n- [The Feynman Lectures on Physics](https://www.feynmanlectures.caltech.edu/)")
+    with col2:
+        st.markdown("#### 🎥 Video")
+        st.markdown("- [PBS Space Time](https://www.youtube.com/c/pbsspacetime)\n- [Veritasium on Quantum Physics](https://www.youtube.com/watch?v=z1_zNquY1_I)")
+    with col3:
+        st.markdown("#### 🎓 Courses")
+        st.markdown("- [Coursera: Quantum Mechanics](https://www.coursera.org/learn/quantum-mechanics)\n- [edX: Quantum Mechanics for Everyone](https://www.edx.org/learn/quantum-mechanics)")
 
 # --- Main App Execution ---
+
 set_background_and_styles()
-display_sidebar_nav()
+display_sidebar()
 
 # Main content area
-choice = display_header_and_choice()
-st.markdown("---")
-
-display_atomic_structure()
-st.markdown("---")
-
-if choice == "☮ Peace":
-    display_peace_path()
-else:
-    display_destruction_path()
-
-display_superposition_and_entanglement()
-display_key_figures()
-display_quiz()
+display_header()
+display_atomic_structure_improved()
+display_core_concepts()
+display_path_choice_and_sections()
 display_timeline()
+display_figures_and_videos()
+display_further_learning()
 
 st.markdown("---")
-st.caption("Created by Nakul | Enhanced with interactive features by Gemini | Inspired by the profound ethics of scientific discovery.")
+st.caption("Created by Nakul | Enhanced with interactive features by Gemini")
 
 # --- Animation Loop Control ---
 st.session_state.frame += 1
+if st.session_state.tunneling_pos > 5:
+    st.session_state.tunneling_pos = -5.0
+else:
+    st.session_state.tunneling_pos += 0.05
+
 time.sleep(0.03)
 st.rerun()
