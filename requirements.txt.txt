@@ -1,0 +1,8 @@
+streamlit
+matplotlib
+numpy
+pandas
+streamlit_timeline
+streamlit_lottie
+requests
+plotly

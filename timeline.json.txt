@@ -1,0 +1,124 @@
+[
+  {
+    start_date {
+      year 1900,
+      month 12,
+      day 14
+    },
+    text {
+      headline Planck's Quantum Hypothesis,
+      text Max Planck introduces the idea that energy is emitted or absorbed in discrete packets called quanta, marking the birth of quantum mechanics.
+    },
+    display_date December 14, 1900
+  },
+  {
+    start_date {
+      year 1905
+    },
+    text {
+      headline Einstein and the Photoelectric Effect,
+      text Albert Einstein explains the photoelectric effect by postulating that light consists of discrete energy quanta (photons).
+    },
+    display_date 1905
+  },
+  {
+    start_date {
+      year 1913
+    },
+    text {
+      headline Bohr Model of the Atom,
+      text Niels Bohr proposes a model where electrons orbit the nucleus in specific energy levels, explaining atomic spectra.
+    },
+    display_date 1913
+  },
+  {
+    start_date {
+      year 1925
+    },
+    text {
+      headline Heisenberg's Matrix Mechanics,
+      text Werner Heisenberg develops a mathematical framework for quantum mechanics based on matrices.
+    },
+    display_date 1925
+  },
+  {
+    start_date {
+      year 1926
+    },
+    text {
+      headline Schrödinger's Wave Equation,
+      text Erwin Schrödinger formulates a differential equation that describes how the quantum state of a physical system evolves over time.
+    },
+    display_date 1926
+  },
+  {
+    start_date {
+      year 1927
+    },
+    text {
+      headline Heisenberg's Uncertainty Principle,
+      text Heisenberg states that it's impossible to simultaneously know precisely both the position and momentum of a particle.
+    },
+    display_date 1927
+  },
+  {
+    start_date {
+      year 1942
+    },
+    text {
+      headline First Self-Sustaining Nuclear Chain Reaction,
+      text Enrico Fermi leads the team achieving the first controlled nuclear chain reaction at the University of Chicago.
+    },
+    display_date December 2, 1942
+  },
+  {
+    start_date {
+      year 1945
+    },
+    text {
+      headline Atomic Bombs Used (Hiroshima & Nagasaki),
+      text The first and only use of atomic weapons in warfare.
+    },
+    display_date August 1945
+  },
+  {
+    start_date {
+      year 1947
+    },
+    text {
+      headline Discovery of the Transistor,
+      text John Bardeen, Walter Brattain, and William Shockley invent the transistor, a key component in modern electronics, rooted in quantum mechanics.
+    },
+    display_date 1947
+  },
+  {
+    start_date {
+      year 1964
+    },
+    text {
+      headline Bell's Theorem,
+      text John Bell proposes a theorem that could experimentally test local realism versus quantum entanglement.
+    },
+    display_date 1964
+  },
+  {
+    start_date {
+      year 2000
+    },
+    text {
+      headline Quantum Computing Advances,
+      text Significant strides in quantum computing research begin, with early prototypes and theoretical breakthroughs.
+    },
+    display_date 2000s
+  },
+  {
+    start_date {
+      year 2019
+    },
+    text {
+      headline Quantum Supremacy Claim (Google),
+      text Google announces its Sycamore processor achieved quantum supremacy, performing a calculation beyond the capabilities of classical supercomputers.
+    },
+    display_date 2019
+  }
+]
