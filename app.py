@@ -293,7 +293,8 @@ st.markdown("---")
 st.header("🌌 Animated Quantum Vibe: The Fabric of Reality")
 st.markdown("<p style='text-align: center; color: gray;'>A visual representation of the abstract and interconnected nature of the quantum world.</p>", unsafe_allow_html=True)
 
-lottie_q = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_jnJFlq.json") # Quantum swirl
+# Lottie URL has been updated here
+lottie_q = load_lottieurl("https://assets.lottiefiles.com/packages/lf20_mkmq71a2.json") # New Lottie URL for Quantum Vibe
 if lottie_q:
     st_lottie(lottie_q, speed=1, reverse=False, loop=True, quality="high", height=300)
 else:
