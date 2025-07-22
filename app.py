@@ -308,7 +308,7 @@ st.markdown("<p style='color: gray;'>A visual representation of the abstract and
 
 # Lottie URL for Quantum Vibe - Now loading from LOCAL FILE
 # Ensure 'quantum_vibe.json' is downloaded and in your project folder
-lottie_q = load_lottie_from_local("./quantum_vibe.json") # Call the new local loading function
+lottie_q = load_lottie_from_local("quantum_vibe.json") # Call the new local loading function
 
 if lottie_q:
     st_lottie(lottie_q, speed=1, reverse=False, loop=True, quality="high", height=300)
