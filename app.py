@@ -22,7 +22,7 @@ def set_background(image_file=None, gradient_colors=None):
     Sets a background for the Streamlit app.
     Args:
         image_file (str, optional): The path to the background image file. Defaults to None.
-        gradient_colors (list, optional): A list of two or more hex color codes for a gradient background. E.g., ['#F0F2F6', '#DCDCDC']. Defaults to None.
+        gradient_colors (list, optional): A list of two or more hex color codes for a gradient background. E.g., ['#000000', '#2C3E50']. Defaults to None.
     """
     if image_file:
         with open(image_file, "rb") as f:
@@ -39,7 +39,7 @@ def set_background(image_file=None, gradient_colors=None):
         </style>
         """
     elif gradient_colors and len(gradient_colors) >= 2:
-        # Example: linear-gradient(to right, #F0F2F6, #DCDCDC);
+        # Example: linear-gradient(to right, #000000, #2C3E50);
         gradient_str = ", ".join(gradient_colors)
         bg_style = f"""
         <style>
@@ -228,7 +228,7 @@ else:
     with col1:
         st.warning("☠️ **Hiroshima (August 6, 1945):** An estimated 140,000 lives lost, a city vaporized in an instant, and the horrifying dawn of the nuclear age.")
         st.warning("☠️ **Nagasaki (August 9, 1945):** Another 74,000 lives extinguished, demonstrating the horrifying scale of atomic warfare.")
-        st.warning("⚠️ **Long-term Radiation Effects:** Survivors faced severe health issues, including cancers and genetic mutations, for decades dues to lingering radiation.")
+        st.warning("⚠️ **Long-term Radiation Effects:** Survivors faced severe health issues, including cancers and genetic mutations, for decades due to lingering radiation.")
         st.warning("⚠️ **Environmental Devastation:** The blasts caused widespread physical destruction and introduced radioactive fallout that contaminated land and water.")
 
 
