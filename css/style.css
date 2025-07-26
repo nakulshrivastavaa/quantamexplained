@@ -1,0 +1,102 @@
+/* --- Keyframe Animations --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 5px #64FFDA, 0 0 10px #64FFDA; }
+    50% { box-shadow: 0 0 20px #64FFDA, 0 0 30px #64FFDA; }
+    100% { box-shadow: 0 0 5px #64FFDA, 0 0 10px #64FFDA; }
+}
+
+/* --- General Body & Font Styling --- */
+body {
+    font-family: 'Inter', sans-serif; /* A clean, modern font */
+}
+
+/* Apply a fade-in to all major sections for a smooth loading experience */
+.main > div {
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* --- Title Styling --- */
+h1 {
+    /* Animated Gradient Text */
+    background: linear-gradient(90deg, #64FFDA, #BB86FC, #64FFDA);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-animation 4s ease infinite;
+    text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+}
+
+@keyframes gradient-animation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+h2, h3 {
+    color: #f0f2f6; /* Lighter color for headers */
+}
+
+/* --- Glassmorphism Card Effect --- */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05); /* Very low opacity white */
+    backdrop-filter: blur(15px); /* The frosted glass effect! */
+    -webkit-backdrop-filter: blur(15px); /* For Safari */
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 25px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Interactive Elements Styling --- */
+
+/* Style for the choice radio buttons */
+div[role="radiogroup"] label {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+div[role="radiogroup"] label:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: #64FFDA;
+}
+
+/* Style for the SELECTED radio button */
+div[role="radiogroup"] input:checked + div {
+    animation: pulseGlow 2s infinite;
+    background-color: rgba(100, 255, 218, 0.2);
+    color: #ffffff;
+}
+
+/* Add hover effect to Lottie animations and videos */
+.stLottie, .stVideo {
+    transition: transform 0.3s ease, filter 0.3s ease;
+    border-radius: 15px;
+    overflow: hidden; /* Ensures video corners are rounded */
+}
+
+.stLottie:hover, .stVideo:hover {
+    transform: scale(1.03);
+    filter: brightness(1.2);
+}
+
+/* Timeline custom styling */
+.timeline-wrapper {
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.2);
+}
