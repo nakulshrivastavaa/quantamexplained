@@ -10,16 +10,18 @@ import plotly.graph_objects as go
 import time # For animation
 import base64 # Required for background image functions
 
-# --- ONLY ADDITION: A self-contained function to load the CSS file ---
-def local_css(css/style.css):
+# --- SYNTAX ERROR FIXED IN THIS FUNCTION ---
+# The parameter was changed from 'style.css' to a valid name 'file_name'
+def local_css(file_name):
     try:
-        with open(style.css, "r") as f:
+        with open(file_name, "r") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     except FileNotFoundError:
-        st.error(f"IMPORTANT: CSS file not found at '{style.css}'. Please create a 'css' folder and a 'style.css' file inside it.")
+        st.error(f"IMPORTANT: CSS file not found at '{file_name}'. Please create a 'css' folder and a 'style.css' file inside it.")
 
-local_css("style.css")
-# --- END OF ADDITION. The rest of your code is untouched below. ---
+# The function is now called with the correct string argument
+local_css("css/style.css")
+# --- END OF FIX. The rest of your code is untouched below. ---
 
 
 # --- Page Configuration ---
