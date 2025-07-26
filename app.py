@@ -11,12 +11,9 @@ import time # For animation
 import base64 # Required for background image functions
 
 # --- Page Configuration ---
-# Removed 'icon' argument for broader compatibility
 st.set_page_config(page_title="Quantum Explained", layout="wide")
 
 # --- Background Setting Function ---
-# This function applies a custom background to the Streamlit app.
-# You can choose between an image background or a solid/gradient color.
 def set_background(image_file=None, gradient_colors=None):
     """
     Sets a background for the Streamlit app.
@@ -39,7 +36,6 @@ def set_background(image_file=None, gradient_colors=None):
         </style>
         """
     elif gradient_colors and len(gradient_colors) >= 2:
-        # Example: linear-gradient(to right, #000000, #2C3E50);
         gradient_str = ", ".join(gradient_colors)
         bg_style = f"""
         <style>
@@ -50,7 +46,6 @@ def set_background(image_file=None, gradient_colors=None):
         </style>
         """
     else:
-        # Default fallback to a simple light grey if no specific background is chosen
         bg_style = f"""
         <style>
         .stApp {{
@@ -62,31 +57,9 @@ def set_background(image_file=None, gradient_colors=None):
     st.markdown(bg_style, unsafe_allow_html=True)
 
 # --- Apply Background ---
-# **Choose ONE of the options below by uncommenting it:**
-
-# Option 1: Image Background
-# set_background(image_file='./your_background_image.png')
-# IMPORTANT: Make sure 'your_background_image.png' is in your GitHub repo!
-
-# Option 2: Gradient Background (Recommended for a clean, modern look)
-set_background(gradient_colors=['#000000', '#2C3E50']) # Dark gradient for a sleek, cosmic feel
-# You can try other gradients, e.g., ['#F0F2F6', '#DCDCDC'] for light gray, or ['#ADD8E6', '#87CEEB'] for light blue
-
-# Option 3: Solid Color Background (if you want something very simple)
-# st.markdown(
-#     f"""
-#     <style>
-#     .stApp {{
-#         background-color: #f0f2f6; /* A light grey */
-#     }}
-#     </style>
-#     """,
-#     unsafe_allow_html=True
-# )
-
+set_background(gradient_colors=['#000000', '#2C3E50'])
 
 # --- Helper Functions for Lottie Animations ---
-# This function is now specifically for loading local Lottie JSON files
 def load_lottie_from_local(filepath: str):
     try:
         with open(filepath, "r") as f:
@@ -98,7 +71,6 @@ def load_lottie_from_local(filepath: str):
         st.error(f"❌ Error loading Lottie file from {filepath}: {e}")
         return None
 
-# For external URLs, a simpler direct call (without @st.cache_data)
 def load_lottie_from_url(url: str):
     r = requests.get(url)
     if r.status_code != 200:
@@ -116,59 +88,54 @@ st.markdown("<h3><p style='text-align: center;'>Choose the path of humanity:</p>
 choice = st.radio("", ["☮️ Peace", "💣 Destruction"], horizontal=True, label_visibility="collapsed")
 st.markdown("---")
 
-# 🔬 Animated Atomic Structure
+# --- MODIFIED SECTION: Animated Atomic Structure ---
 st.header("🔬 Visualizing Atomic Structure (Animated)")
 st.markdown("<p style='color: gray;'>Witness the dance of electrons around the nucleus.</p>", unsafe_allow_html=True)
 
-# Animation control
-animation_speed = st.slider("Electron Orbit Speed", 0.1, 2.0, 1.0, 0.1)
+# Animation control: Use the slider value directly to set the electron position
+animation_frame = st.slider("Adjust Electron Position", 0.0, 10.0, 1.0, 0.1)
 
-# Create a placeholder for the plot to update it
-atomic_structure_placeholder = st.empty()
+# Set time variable based on slider
+t = animation_frame * 0.5 
 
-# Animation loop for electrons
-for i in range(100): # Loop for 100 frames of animation
-    t = i * 0.05 * animation_speed # Time variable for animation
+# Nucleus
+nucleus_x = [0]
+nucleus_y = [0]
 
-    # Nucleus
-    nucleus_x = [0]
-    nucleus_y = [0]
+# Electron 1 (orbiting)
+electron1_radius = 1
+electron1_x = [electron1_radius * np.cos(t)]
+electron1_y = [electron1_radius * np.sin(t)]
 
-    # Electron 1 (orbiting)
-    electron1_radius = 1
-    electron1_x = [electron1_radius * np.cos(t)]
-    electron1_y = [electron1_radius * np.sin(t)]
+# Electron 2 (orbiting in opposite direction)
+electron2_radius = 1.2
+electron2_x = [electron2_radius * np.cos(t + np.pi)]
+electron2_y = [electron2_radius * np.sin(t + np.pi)]
 
-    # Electron 2 (orbiting in opposite direction)
-    electron2_radius = 1.2
-    electron2_x = [electron2_radius * np.cos(t + np.pi)]
-    electron2_y = [electron2_radius * np.sin(t + np.pi)]
+fig = go.Figure()
 
-    fig = go.Figure()
+fig.add_trace(go.Scatter(x=nucleus_x, y=nucleus_y, mode='markers', marker=dict(size=40, color='red', symbol='circle'), name='Nucleus'))
+fig.add_trace(go.Scatter(x=electron1_x, y=electron1_y, mode='markers', marker=dict(size=15, color='blue', symbol='circle'), name='Electron 1'))
+fig.add_trace(go.Scatter(x=electron2_x, y=electron2_y, mode='markers', marker=dict(size=15, color='green', symbol='circle'), name='Electron 2'))
 
-    fig.add_trace(go.Scatter(x=nucleus_x, y=nucleus_y, mode='markers', marker=dict(size=40, color='red', symbol='circle'), name='Nucleus (Protons & Neutrons)'))
-    fig.add_trace(go.Scatter(x=electron1_x, y=electron1_y, mode='markers', marker=dict(size=15, color='blue', symbol='circle'), name='Electron 1'))
-    fig.add_trace(go.Scatter(x=electron2_x, y=electron2_y, mode='markers', marker=dict(size=15, color='green', symbol='circle'), name='Electron 2'))
+# Add static orbit paths
+orbit_t = np.linspace(0, 2*np.pi, 100)
+fig.add_trace(go.Scatter(x=electron1_radius * np.cos(orbit_t), y=electron1_radius * np.sin(orbit_t), mode='lines', line=dict(color='blue', dash='dot', width=1), showlegend=False))
+fig.add_trace(go.Scatter(x=electron2_radius * np.cos(orbit_t), y=electron2_radius * np.sin(orbit_t), mode='lines', line=dict(color='green', dash='dot', width=1), showlegend=False))
 
-    # Add orbit paths (faint lines)
-    orbit_t = np.linspace(0, 2*np.pi, 100)
-    fig.add_trace(go.Scatter(x=electron1_radius * np.cos(orbit_t), y=electron1_radius * np.sin(orbit_t), mode='lines', line=dict(color='blue', dash='dot', width=1), showlegend=False))
-    fig.add_trace(go.Scatter(x=electron2_radius * np.cos(orbit_t), y=electron2_radius * np.sin(orbit_t), mode='lines', line=dict(color='green', dash='dot', width=1), showlegend=False))
+fig.update_layout(
+    xaxis=dict(visible=False, range=[-1.5, 1.5]),
+    yaxis=dict(visible=False, scaleanchor="x", scaleratio=1, range=[-1.5, 1.5]),
+    showlegend=False,
+    width=700,
+    height=500,
+    plot_bgcolor="black",
+    paper_bgcolor="black",
+    margin=dict(l=0, r=0, t=0, b=0)
+)
 
-
-    fig.update_layout(
-        xaxis=dict(visible=False, range=[-1.5, 1.5]),
-        yaxis=dict(visible=False, scaleanchor="x", scaleratio=1, range=[-1.5, 1.5]), # Ensure aspect ratio
-        showlegend=False,
-        width=700,
-        height=500,
-        plot_bgcolor="black", # Background color for the plot area
-        paper_bgcolor="black", # Background color for the entire figure (outside the plot area)
-        margin=dict(l=0, r=0, t=0, b=0)
-    )
-    with atomic_structure_placeholder:
-        st.plotly_chart(fig, use_container_width=True)
-    time.sleep(0.05) # Control animation speed
+st.plotly_chart(fig, use_container_width=True)
+# --- END MODIFIED SECTION ---
 
 st.markdown("---")
 
@@ -196,7 +163,7 @@ st.markdown("---")
 if choice == "☮️ Peace":
     st.header("🌿 Quantum for Peace: Harnessing Nature's Power")
     st.markdown("<p style='color: gray;'>Discover how quantum principles are used to heal, power, and secure our world.</p>", unsafe_allow_html=True)
-    col1, col2 = st.columns([3, 2]) # Adjust column width
+    col1, col2 = st.columns([3, 2])
 
     with col1:
         st.success("✅ **Medical Imaging (MRI):** Powerful magnetic fields and radio waves interact with atomic nuclei to create detailed images of the human body, revolutionizing diagnostics.")
@@ -269,15 +236,10 @@ if neutron_initiates_fission:
 """, language="python")
 
     st.markdown("> **\"Now I am become Death, the Destroyer of Worlds.\"** — *J. Robert Oppenheimer, quoting the Bhagavad Gita upon witnessing the first atomic bomb test.*")
-
-    # --- ADDED: Image below Oppenheimer quote ---
+    
     st.image("./oppenheimer_test_image.jpg", caption="Trinity Test, the first atomic bomb detonation (Conceptual)", use_container_width=True)
-    # Make sure 'oppenheimer_test_image.jpg' is in your folder and committed to GitHub!
-    # You can change the image file name and caption as needed.
-    # --- END ADDED ---
-
+    
     try:
-        # Assuming oppenheimer_theme.mp3 is in the same directory as your script
         with open("oppenheimer_theme.mp3", "rb") as f:
             st.audio(f.read(), format="audio/mp3", start_time=0)
     except FileNotFoundError:
@@ -291,25 +253,20 @@ st.markdown("---")
 st.header("📜 Timeline of Quantum Physics: A Journey of Discovery")
 st.markdown("<p style='color: gray;'>Explore key milestones in the development of quantum mechanics and its applications.</p>", unsafe_allow_html=True)
 try:
-    # Ensure timeline.json is in the same directory as your script
     with open("timeline.json", "r", encoding="utf-8") as f:
         data = json.load(f)
-    timeline(data, height=600) # Increased height for better visibility
+    timeline(data, height=600)
 except FileNotFoundError:
-    st.error("❌ `timeline.json` not found. Please ensure the timeline data file is in the same directory as your script. You can create one like this: "
-             "```json\n[\n  {\"start_date\": {\"year\": \"1900\"}, \"text\": {\"headline\": \"Planck's Quantum Hypothesis\", \"text\": \"Max Planck introduces the idea that energy is emitted or absorbed in discrete packets called quanta.\"}},\n  {\"start_date\": {\"year\": \"1905\"}, \"text\": {\"headline\": \"Einstein and the Photoelectric Effect\", \"text\": \"Albert Einstein explains the photoelectric effect by postulatin g that light consists of particles called photons.\"}}\n]\n```")
+    st.error("❌ `timeline.json` not found. Please ensure the timeline data file is in the same directory as your script.")
 except Exception as e:
     st.error(f"❌ Timeline failed to load: {e}. Please check the format of your `timeline.json` file.")
 
-# 🎮 Lottie Animation: Quantum swirl - Now loaded from local file
 st.markdown("---")
+# 🎮 Lottie Animation: Quantum swirl
 st.header("🌌 Animated Quantum Vibe: The Fabric of Reality")
 st.markdown("<p style='color: gray;'>A visual representation of the abstract and interconnected nature of the quantum world.</p>", unsafe_allow_html=True)
 
-# Lottie URL for Quantum Vibe - Now loading from LOCAL FILE
-# Ensure 'quantum_vibe.json' is downloaded and in your project folder
-lottie_q = load_lottie_from_local("./quantum_vibe.json") # Call the new local loading function
-
+lottie_q = load_lottie_from_local("./quantum_vibe.json") 
 if lottie_q:
     st_lottie(lottie_q, speed=1, reverse=False, loop=True, quality="high", height=300)
 else:
@@ -318,12 +275,10 @@ else:
 # 🎥 Centered Videos
 st.markdown("---")
 st.header("🎥 Quantum Reality in Motion: Visualizing the Impact")
-st.markdown("<div style='display: flex; justify-content: center; flex-wrap: wrap;'>", unsafe_allow_html=True) # Use flex-wrap for responsiveness
+st.markdown("<div style='display: flex; justify-content: center; flex-wrap: wrap;'>", unsafe_allow_html=True)
 
-# Video 1: Oppenheimer Intro (if available)
 st.markdown("<div style='margin: 10px; flex-grow: 1; min-width: 300px;'>", unsafe_allow_html=True)
 try:
-    # Corrected path assumption for local files (relative to script)
     with open("oppenheimer_intro.mp4", "rb") as f:
         st.video(f.read(), format="video/mp4", start_time=0)
     st.caption("A glimpse into the historical context.")
@@ -333,20 +288,18 @@ except Exception as e:
     st.error(f"Error loading 'oppenheimer_intro.mp4': {e}")
 st.markdown("</div>", unsafe_allow_html=True)
 
-# Video 2: Atomic Blast (if available)
 st.markdown("<div style='margin: 10px; flex-grow: 1; min-width: 300px;'>", unsafe_allow_html=True)
 try:
-    # Corrected path assumption for local files (relative to script)
     with open("atomic_blast.mp4", "rb") as f:
         st.video(f.read(), format="video/mp4", start_time=0)
     st.caption("The raw power of an atomic explosion.")
 except FileNotFoundError:
-    st.warning("Video 'atomic_blast.mp4' not found. Please ensure the video file is in the same directory (or 'videos/' subfolder if specified).")
+    st.warning("Video 'atomic_blast.mp4' not found. Please ensure the video file is in the same directory.")
 except Exception as e:
     st.error(f"Error loading 'atomic_blast.mp4': {e}")
 st.markdown("</div>", unsafe_allow_html=True)
 
-st.markdown("</div>", unsafe_allow_html=True) # Close flex container
+st.markdown("</div>", unsafe_allow_html=True)
 
 # Footer
 st.markdown("---")
