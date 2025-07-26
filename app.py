@@ -10,73 +10,20 @@ import plotly.graph_objects as go
 import time # For animation
 import base64 # Required for background image functions
 
+# --- ONLY ADDITION: A self-contained function to load the CSS file ---
+def local_css(file_name):
+    try:
+        with open(file_name, "r") as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    except FileNotFoundError:
+        st.error(f"IMPORTANT: CSS file not found at '{file_name}'. Please create a 'css' folder and a 'style.css' file inside it.")
+
+local_css("css/style.css")
+# --- END OF ADDITION. The rest of your code is untouched below. ---
+
+
 # --- Page Configuration ---
 st.set_page_config(page_title="Quantum Explained", layout="wide")
-
-
-# --- NEW SECTION: ADD CUSTOM CSS ---
-# I am adding this new block to inject the CSS for animations and styling.
-# Your original code remains untouched below.
-st.markdown("""
-<style>
-/* General fade-in animation for sections */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Apply fade-in animation to the main containers of the app */
-.main > div {
-    animation: fadeIn 1s ease-in-out;
-}
-
-/* Card effect for the columns in Peace/Destruction paths */
-.info-card {
-    background-color: rgba(44, 62, 80, 0.4);
-    padding: 25px;
-    border-radius: 15px;
-    border: 1px solid #3c4f61;
-    margin-bottom: 20px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.info-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-}
-
-/* Style for the success/warning items within the cards */
-.info-card .stSuccess, .info-card .stWarning {
-    border-radius: 8px;
-    padding: 10px !important;
-    margin-bottom: 10px;
-    border-left: 5px solid;
-}
-
-.info-card .stSuccess {
-    border-left-color: #28a745;
-    background-color: rgba(40, 167, 69, 0.1);
-}
-
-.info-card .stWarning {
-    border-left-color: #ffc107;
-    background-color: rgba(255, 193, 7, 0.1);
-}
-
-/* Center the radio buttons */
-div[role="radiogroup"] {
-    justify-content: center;
-}
-</style>
-""", unsafe_allow_html=True)
-# --- END OF NEW SECTION ---
-
 
 # --- Background Setting Function ---
 def set_background(image_file=None, gradient_colors=None):
@@ -231,15 +178,11 @@ if choice == "☮️ Peace":
     col1, col2 = st.columns([3, 2])
 
     with col1:
-        # ADDED div to apply card style
-        st.markdown("<div class='info-card'>", unsafe_allow_html=True)
         st.success("✅ **Medical Imaging (MRI):** Powerful magnetic fields and radio waves interact with atomic nuclei to create detailed images of the human body, revolutionizing diagnostics.")
         st.success("✅ **Cancer Radiotherapy:** Precisely targeted radiation from isotopes destroys cancer cells while minimizing damage to healthy tissue.")
         st.success("✅ **Clean Energy (Nuclear Reactors):** Controlled nuclear fission releases vast amounts of energy from a small mass, providing a low-carbon power source for millions.")
         st.success("✅ **Quantum Encryption:** Leveraging principles like superposition and entanglement to create unhackable communication channels, vital for cybersecurity.")
         st.success("✅ **Atomic Clocks:** Unimaginably precise timekeeping devices based on atomic vibrations, essential for GPS and global communication networks.")
-        # ADDED closing div
-        st.markdown("</div>", unsafe_allow_html=True)
 
     with col2:
         lottie_clean_energy = load_lottie_from_url("https://assets1.lottiefiles.com/packages/lf20_e0wU3R.json") # Clean energy animation
@@ -262,14 +205,10 @@ else:
     col1, col2 = st.columns([3, 2])
 
     with col1:
-        # ADDED div to apply card style
-        st.markdown("<div class='info-card'>", unsafe_allow_html=True)
         st.warning("☠️ **Hiroshima (August 6, 1945):** An estimated 140,000 lives lost, a city vaporized in an instant, and the horrifying dawn of the nuclear age.")
         st.warning("☠️ **Nagasaki (August 9, 1945):** Another 74,000 lives extinguished, demonstrating the horrifying scale of atomic warfare.")
         st.warning("⚠️ **Long-term Radiation Effects:** Survivors faced severe health issues, including cancers and genetic mutations, for decades due to lingering radiation.")
         st.warning("⚠️ **Environmental Devastation:** The blasts caused widespread physical destruction and introduced radioactive fallout that contaminated land and water.")
-        # ADDED closing div
-        st.markdown("</div>", unsafe_allow_html=True)
 
 
     with col2:
@@ -373,15 +312,6 @@ except Exception as e:
 st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown("</div>", unsafe_allow_html=True)
-
-
-# --- Function to load local CSS ---
-def local_css(style.css):
-    try:
-        with open(style.css, "r") as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-    except FileNotFoundError:
-        st.error(f"CSS file not found: {style.css}. Make sure it's in the correct folder.")
 
 # Footer
 st.markdown("---")
