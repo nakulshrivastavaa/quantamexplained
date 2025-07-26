@@ -11,7 +11,7 @@ import time # For animation
 import base64 # Required for background image functions
 
 # --- ONLY ADDITION: A self-contained function to load the CSS file ---
-def local_css(style.cc):
+def local_css(style.css):
     try:
         with open(style.css, "r") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
