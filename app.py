@@ -374,6 +374,15 @@ st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown("</div>", unsafe_allow_html=True)
 
+
+# --- Function to load local CSS ---
+def local_css(style.css):
+    try:
+        with open(style.css, "r") as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    except FileNotFoundError:
+        st.error(f"CSS file not found: {style.css}. Make sure it's in the correct folder.")
+
 # Footer
 st.markdown("---")
 st.caption("Created by Nakul | Powered by Streamlit & Quantum Insights | Inspired by the profound ethics of scientific discovery.")
