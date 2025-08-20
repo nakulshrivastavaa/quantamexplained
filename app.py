@@ -70,7 +70,7 @@ hr {
 
 
 # --- Background Setting Function (Unchanged) ---
-def set_background(image_file=None, gradient_colors=None):
+def set_background(image_file=dark.jpg, gradient_colors=None):
     if image_file:
         with open(image_file, "rb") as f:
             data = f.read()
